@@ -37,9 +37,12 @@ async function getStudent () {
 }
 const createTable = () => {
     const keys = ['id','firstName','lastName','capsule','age','city','gender','hobby'];
+    const row = document.createElement('thead');
     keys.forEach((header) => {
-        const headRow = document.createElement('td');
+        const headRow = document.createElement('th');
         headRow.textContent = header.toString()
+        row.appendChild(headRow);
+        tableContainer.appendChild(row)
     })
     studentArray.sort((a, b) => a.id - b.id);
     studentArray.forEach((el) => {
@@ -64,5 +67,8 @@ const createTable = () => {
         row.appendChild(deleteButtonContainer);
         tableContainer.appendChild(row)
     })
+}
+const sortRow = () => {
+
 }
 getStudent();

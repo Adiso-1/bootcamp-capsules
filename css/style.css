@@ -14,3 +14,10 @@ th {
 	padding: 0 10px;
 	text-align: left;
 }
+th {
+	cursor: pointer;
+}
+tr:hover,
+td:hover {
+	background: lightcyan;
+}
