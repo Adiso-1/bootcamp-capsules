@@ -42,10 +42,18 @@ const createTable = () => {
     const row = document.createElement('thead');
     keys.forEach((header) => {
         const headRow = document.createElement('th');
+        headRow.setAttribute('sort',false);
         headRow.textContent = header.toString()
         row.appendChild(headRow);
         tableContainer.appendChild(row)
-        headRow.addEventListener('click',(e) => sortRow(e))
+        headRow.addEventListener('click',(e) => {
+            if (headRow.getAttribute('sort') === 'false'){
+                headRow.attributes.sort.value = 'true'
+            } else {
+                headRow.attributes.sort.value = 'false'
+            } 
+            sortRow(e);
+        })
     })
     // studentArray.sort((a, b) => a.id - b.id);
     studentArray.forEach((el) => {
@@ -72,11 +80,9 @@ const createTable = () => {
     })
 }
 const sortRow = (e) => {
+    console.dir(e.target.getAttribute('sort'));
     studentArray.sort((a,b) => {
-        if (Number(a[e.target.innerText])) {
-            return Number(a[e.target.innerText]) - Number(b[e.target.innerText]);
-        }
-        return a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString());
+        return a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString(), undefined, {numeric: true,});
     })
     createTable();
 }   
