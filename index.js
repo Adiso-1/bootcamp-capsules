@@ -1,7 +1,10 @@
 const baseEndpoint = 'https://apple-seeds.herokuapp.com/api/users/';
 const tableContainer = document.querySelector('#table-container');
-const header = document.querySelectorAll('header');
-const studentArray = [];
+const header = document.querySelectorAll('.header');
+const category = document.querySelectorAll('.category');
+const input = document.querySelector('.input');
+let searchCategory;
+let studentArray = [];
 
 class Student {
     constructor(id,firstName,lastName,capsule,age,city,gender,hobby) {
@@ -34,9 +37,9 @@ async function getStudent () {
         studentArray.push(student);
     }))
     studentArray.sort((a,b) => a.id - b.id)
-    createTable();
+    createTable(studentArray);
 }
-const createTable = () => {
+const createTable = (arg) => {
     tableContainer.innerHTML = '';
     const keys = ['id','firstName','lastName','capsule','age','city','gender','hobby'];
     const row = document.createElement('thead');
@@ -55,8 +58,7 @@ const createTable = () => {
             sortRow(e);
         })
     })
-    // studentArray.sort((a, b) => a.id - b.id);
-    studentArray.forEach((el) => {
+    arg.forEach((el) => {
         const row = document.createElement('tr');
         keys.forEach((key) => {
             const tableData = document.createElement('td')
@@ -80,10 +82,21 @@ const createTable = () => {
     })
 }
 const sortRow = (e) => {
-    console.dir(e.target.getAttribute('sort'));
     studentArray.sort((a,b) => {
         return a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString(), undefined, {numeric: true,});
     })
     createTable();
 }   
+input.addEventListener('input', (e) => {
+        createTable(studentArray.filter(el => {
+            return el[searchCategory].toString().toLowerCase().indexOf(input.value.toLowerCase()) >= 0;
+        }))
+    })
+category.forEach((el) => {
+    searchCategory = 'id';
+    el.addEventListener('click', (e) => {
+        searchCategory = e.target.value;
+    })
+})
 getStudent();
+

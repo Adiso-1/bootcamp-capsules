@@ -5,9 +5,27 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="./css/style.css" />
-		<title>Bootcamp Capsouls</title>
+		<title>Bootcamp Capsuls</title>
 	</head>
 	<body>
+		<div id="header">
+			<div class="search">
+				<span>search: </span>
+				<input class="input" type="text" />
+				<select name="category-container" class="category">
+					<option class="category id" value="id">ID</option>
+					<option class="category firstName" value="firstName">
+						First Name
+					</option>
+					<option class="category lastName" value="lastName">Last Name</option>
+					<option class="category capsule" value="capsule">Capsule</option>
+					<option class="category age" value="age">Age</option>
+					<option class="category city" value="city">City</option>
+					<option class="category gender" value="gender">Gender</option>
+					<option class="category hobby" value="hobby">Hobby</option>
+				</select>
+			</div>
+		</div>
 		<table id="table-container"></table>
 		<script src="./index.js"></script>
 	</body>
