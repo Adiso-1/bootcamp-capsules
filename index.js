@@ -33,9 +33,11 @@ async function getStudent () {
             );
         studentArray.push(student);
     }))
+    studentArray.sort((a,b) => a.id - b.id)
     createTable();
 }
 const createTable = () => {
+    tableContainer.innerHTML = '';
     const keys = ['id','firstName','lastName','capsule','age','city','gender','hobby'];
     const row = document.createElement('thead');
     keys.forEach((header) => {
@@ -43,8 +45,9 @@ const createTable = () => {
         headRow.textContent = header.toString()
         row.appendChild(headRow);
         tableContainer.appendChild(row)
+        headRow.addEventListener('click',(e) => sortRow(e))
     })
-    studentArray.sort((a, b) => a.id - b.id);
+    // studentArray.sort((a, b) => a.id - b.id);
     studentArray.forEach((el) => {
         const row = document.createElement('tr');
         keys.forEach((key) => {
@@ -68,7 +71,13 @@ const createTable = () => {
         tableContainer.appendChild(row)
     })
 }
-const sortRow = () => {
-
-}
+const sortRow = (e) => {
+    studentArray.sort((a,b) => {
+        if (Number(a[e.target.innerText])) {
+            return Number(a[e.target.innerText]) - Number(b[e.target.innerText]);
+        }
+        return a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString());
+    })
+    createTable();
+}   
 getStudent();
