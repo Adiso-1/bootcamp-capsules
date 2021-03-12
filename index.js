@@ -80,6 +80,7 @@ const createTable = (arg) => {
 			row.appendChild(tableData);
 			tableContainer.appendChild(row);
 		});
+        //! create edit button
 		const editButtonContainer = document.createElement('td');
 		const editButton = document.createElement('button');
 		editButton.addEventListener('click', (e) => edit(e));
@@ -88,7 +89,8 @@ const createTable = (arg) => {
 		editButtonContainer.appendChild(editButton);
 		row.appendChild(editButtonContainer);
 		tableContainer.appendChild(row);
-
+        
+        //! create cancel button
 		const cancelButtonContainer = document.createElement('td');
 		cancelButtonContainer.classList.add('hidden-td');
 		const cancelButton = document.createElement('button');
@@ -98,7 +100,19 @@ const createTable = (arg) => {
 		cancelButtonContainer.appendChild(cancelButton);
 		row.appendChild(cancelButtonContainer);
 		tableContainer.appendChild(row);
-
+        
+        //! create confirm button
+		const confirmButtonContainer = document.createElement('td');
+		confirmButtonContainer.classList.add('hidden-td');
+		const confirmButton = document.createElement('button');
+		confirmButton.addEventListener('click', (e) => confirm(e));
+		confirmButton.classList.add('button', 'confirm-button');
+		confirmButton.textContent = 'confirm';
+		confirmButtonContainer.appendChild(confirmButton);
+		row.appendChild(confirmButtonContainer);
+		tableContainer.appendChild(row);
+        
+        //! create delete button
 		const deleteButtonContainer = document.createElement('td');
 		const deleteButton = document.createElement('button');
 		deleteButton.addEventListener('click', (e) => deleteStudent(e));
@@ -119,16 +133,33 @@ const sortRow = (e) => {
 	createTable(studentArray);
 };
 const cancel = (e) => {
-    let array = e.target.parentElement.parentElement.childNodes;
+    const array = e.target.parentElement.parentElement.childNodes;
     for (let i = 0; i < array.length; i++) {
         if (i > 0 && i < 8) {
             array[i].firstElementChild.remove();
             array[i].innerText = editCache[array[0].textContent][i -1];
         }
     }
-    e.target.parentElement.style.display = 'none';
-	e.target.parentElement.previousElementSibling.style.display = 'block';
+    e.target.parentElement.classList.add('hidden-td');
+    e.target.parentElement.nextElementSibling.classList.add('hidden-td');
+	e.target.parentElement.previousElementSibling.classList.remove('hidden-td');
+    e.target.parentElement.nextElementSibling.nextElementSibling.classList.remove('hidden-td');
 };
+let test;
+const confirm = (e) => {
+    const array = e.target.parentElement.parentElement.childNodes;
+    for (let i = 0; i < array.length; i++) {
+        if (i > 0 && i < 8) {
+            let textInput = array[i].firstElementChild.value;
+            array[i].firstElementChild.remove();
+            array[i].innerText = textInput;
+        }        
+    }
+    e.target.parentElement.classList.add('hidden-td');
+    e.target.parentElement.previousElementSibling.classList.add('hidden-td');
+    e.target.parentElement.previousElementSibling.previousElementSibling.classList.remove('hidden-td');
+    e.target.parentElement.nextElementSibling.classList.remove('hidden-td')
+}
 const edit = (e) => {
 	const childNodesArr = e.path[2].childNodes;
 	editCache[childNodesArr[0].textContent] = [];
@@ -149,7 +180,9 @@ const edit = (e) => {
 		}
 	}
 	e.target.parentElement.classList.add('hidden-td');
+	e.target.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.classList.add('hidden-td');
 	e.target.parentElement.nextElementSibling.classList.remove('hidden-td');
+	e.target.parentElement.nextElementSibling.nextElementSibling.classList.remove('hidden-td');
 };
 const deleteStudent = (e) =>
 	(e.target.parentElement.parentElement.style.display = 'none');
