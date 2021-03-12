@@ -5,6 +5,7 @@ const category = document.querySelectorAll('.category');
 const input = document.querySelector('.input');
 let searchCategory;
 let studentArray = [];
+let filteredArray = [];
 
 class Student {
     constructor(id,firstName,lastName,capsule,age,city,gender,hobby) {
@@ -68,13 +69,26 @@ const createTable = (arg) => {
         })
         const editButtonContainer = document.createElement('td');
         const editButton = document.createElement('button')
+        editButton.addEventListener('click',(e) => edit(e))
+        editButton.classList.add('button','edit-button')
         editButton.textContent = 'edit';
         editButtonContainer.appendChild(editButton);
         row.appendChild(editButtonContainer);
         tableContainer.appendChild(row)
+        
+        const cancelButtonContainer = document.createElement('td');
+        cancelButtonContainer.classList.add('hidden-td');
+        const cancelButton = document.createElement('button');
+        cancelButton.addEventListener('click', (e) => cancel(e));
+        cancelButton.classList.add('button', 'cancel-button');
+        cancelButton.textContent = 'cancel';
+        cancelButtonContainer.appendChild(cancelButton);
+        row.appendChild(cancelButtonContainer);
+        tableContainer.appendChild(row);
 
         const deleteButtonContainer = document.createElement('td');
         const deleteButton = document.createElement('button')
+        deleteButton.addEventListener('click', (e) => deleteStudent(e));
         deleteButton.textContent = 'delete';
         deleteButtonContainer.appendChild(deleteButton);
         row.appendChild(deleteButtonContainer);
@@ -82,19 +96,50 @@ const createTable = (arg) => {
     })
 }
 const sortRow = (e) => {
-    studentArray.sort((a,b) => {
-        return a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString(), undefined, {numeric: true,});
-    })
-    createTable();
+    studentArray.sort((a, b) => {
+			return a[e.target.innerText]
+				.toString()
+				.localeCompare(b[e.target.innerText].toString(), undefined, {
+					numeric: true,
+				});
+		});
+    createTable(studentArray);
+}
+const cancel = (e) => {
+    const childNodesArr = e.path[2].childNodes;
+    console.log(console.log(childNodesArr));
 }   
+const edit = (e) => {
+    const childNodesArr = e.path[2].childNodes;
+    for (let i = 0; i < childNodesArr.length; i++) {
+        if(i > 0 && i < 8) {
+            const input = document.createElement('input');
+            if (parseInt(childNodesArr[i].textContent)) {
+                input.type = 'number';
+                input.min = '0'            
+                input.max = '99'            
+            }
+            input.value = childNodesArr[i].textContent;
+            childNodesArr[i].innerHTML = '';
+            childNodesArr[i].appendChild(input);
+        }
+    }
+    e.target.parentElement.classList.add('hidden-td');
+    e.target.parentElement.nextElementSibling.classList.remove('hidden-td');
+
+}
+const deleteStudent = (e) => e.target.parentElement.parentElement.style.display = 'none';
 input.addEventListener('input', (e) => {
-        createTable(studentArray.filter(el => {
-            return el[searchCategory].toString().toLowerCase().indexOf(input.value.toLowerCase()) >= 0;
-        }))
+    filteredArray = studentArray.filter((el) => {
+			return el[searchCategory].toString().toLowerCase().indexOf(input.value.toLowerCase()) >= 0
+        });
+        createTable(filteredArray)
     })
 category.forEach((el) => {
     searchCategory = 'id';
-    el.addEventListener('click', (e) => {
+    el.addEventListener('change', (e) => {
+        input.value = '';
+        createTable(studentArray)
         searchCategory = e.target.value;
     })
 })
