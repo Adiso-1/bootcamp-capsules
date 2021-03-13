@@ -58,7 +58,8 @@ const createTable = (arg) => {
 	const row = document.createElement('thead');
 	keys.forEach((header) => {
 		const headRow = document.createElement('th');
-		headRow.textContent = header.toString();
+		headRow.textContent = (header.toString().replace(/([A-Z])/g, ' $1'));
+		headRow.textContent = `${headRow.textContent.charAt(0).toUpperCase()}${headRow.textContent.slice(1)}`;
 		row.appendChild(headRow);
 		tableContainer.appendChild(row);
 		headRow.addEventListener('click', (e) => sortRow(e));
@@ -115,12 +116,14 @@ const createTable = (arg) => {
 	});
 };
 const sortRow = (e) => {
-	if (sortCache[e.target.innerText]) {
-		sortCache[e.target.innerText] = false;	
-		filteredArray.sort((a, b) =>  b[e.target.innerText].toString().localeCompare(a[e.target.innerText].toString(), undefined, {numeric: true,}));
+	let word = e.target.innerText.replace(' ','');
+	let newWord = `${word.charAt(0).toLowerCase()}${word.slice(1)}`;
+	if (sortCache[newWord]) {
+		sortCache[newWord] = false;	
+		filteredArray.sort((a, b) =>  b[newWord].toString().localeCompare(a[newWord].toString(), undefined, {numeric: true,}));
 	} else {
-		sortCache[e.target.innerText] = true;
-		filteredArray.sort((a, b) =>  a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString(), undefined, {numeric: true,}));
+		sortCache[newWord] = true;
+		filteredArray.sort((a, b) =>  a[newWord].toString().localeCompare(b[newWord].toString(), undefined, {numeric: true,}));
 	}
 	createTable(filteredArray);
 };
