@@ -4,8 +4,9 @@ const header = document.querySelectorAll('.header');
 const category = document.querySelectorAll('.category');
 const input = document.querySelector('.input');
 let searchCategory;
-let studentArray = [];
-let editCache = {};
+const studentArray = [];
+const editCache = {};
+const sortCache = {};
 let filteredArray;
 
 class Student {
@@ -123,14 +124,14 @@ const createTable = (arg) => {
 	});
 };
 const sortRow = (e) => {
-	studentArray.sort((a, b) => {
-		return a[e.target.innerText]
-			.toString()
-			.localeCompare(b[e.target.innerText].toString(), undefined, {
-				numeric: true,
-			});
-	});
-	createTable(studentArray);
+	if (sortCache[e.target.innerText]) {
+		sortCache[e.target.innerText] = false;	
+		filteredArray.sort((a, b) =>  b[e.target.innerText].toString().localeCompare(a[e.target.innerText].toString(), undefined, {numeric: true,}));
+	} else {
+		sortCache[e.target.innerText] = true;
+		filteredArray.sort((a, b) =>  a[e.target.innerText].toString().localeCompare(b[e.target.innerText].toString(), undefined, {numeric: true,}));
+	}
+	createTable(filteredArray);
 };
 const cancel = (e) => {
     const array = e.target.parentElement.parentElement.childNodes;
@@ -145,12 +146,14 @@ const cancel = (e) => {
 	e.target.parentElement.previousElementSibling.classList.remove('hidden-td');
     e.target.parentElement.nextElementSibling.nextElementSibling.classList.remove('hidden-td');
 };
-let test;
 const confirm = (e) => {
+	const keys = ['id','firstName', 'lastName', 'capsule', 'age','city','gender','hobby'];
+	let id = parseInt(e.target.parentElement.parentElement.firstElementChild.textContent);
     const array = e.target.parentElement.parentElement.childNodes;
     for (let i = 0; i < array.length; i++) {
         if (i > 0 && i < 8) {
             let textInput = array[i].firstElementChild.value;
+			filteredArray[id][keys[i]] = textInput;
             array[i].firstElementChild.remove();
             array[i].innerText = textInput;
         }        
@@ -184,8 +187,10 @@ const edit = (e) => {
 	e.target.parentElement.nextElementSibling.classList.remove('hidden-td');
 	e.target.parentElement.nextElementSibling.nextElementSibling.classList.remove('hidden-td');
 };
-const deleteStudent = (e) =>
-	(e.target.parentElement.parentElement.style.display = 'none');
+const deleteStudent = (e) => {
+	filteredArray = filteredArray.filter((el) => el.id !== parseInt(e.target.parentElement.parentElement.firstElementChild.textContent));
+	createTable(filteredArray);
+}
 input.addEventListener('input', (e) => {
 	filteredArray = studentArray.filter((el) => {
 		return (

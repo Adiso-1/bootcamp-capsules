@@ -23,10 +23,14 @@ td:hover {
 }
 input {
 	width: 100px;
+	font-size: 13px;
 }
 .input {
 	width: 150px;
 }
 .hidden-td {
 	display: none;
+}
+button {
+	width: 50px;
 }
