@@ -3,6 +3,8 @@ const tableContainer = document.querySelector('#table-container');
 const header = document.querySelectorAll('.header');
 const category = document.querySelectorAll('.category');
 const input = document.querySelector('.input');
+const spinner = document.querySelector('#spinner');
+const main = document.querySelector('#main');
 let searchCategory;
 const studentArray = [];
 const editCache = {};
@@ -41,9 +43,11 @@ async function getStudent() {
 			studentArray.push(student);
 		})
 	);
+	spinner.style.display = 'none';
+	main.style.display = 'flex';
 	studentArray.sort((a, b) => a.id - b.id);
 	filteredArray = [...studentArray];
-	createTable(studentArray);
+	createTable(filteredArray);
 }
 const createTable = (arg) => {
 	tableContainer.innerHTML = '';
@@ -117,6 +121,7 @@ const createTable = (arg) => {
 		const deleteButtonContainer = document.createElement('td');
 		const deleteButton = document.createElement('button');
 		deleteButton.addEventListener('click', (e) => deleteStudent(e));
+		deleteButton.classList.add('button', 'delete-button');
 		deleteButton.textContent = 'delete';
 		deleteButtonContainer.appendChild(deleteButton);
 		row.appendChild(deleteButtonContainer);
