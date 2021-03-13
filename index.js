@@ -5,10 +5,13 @@ const category = document.querySelectorAll('.category');
 const input = document.querySelector('.input');
 const spinner = document.querySelector('#spinner');
 const main = document.querySelector('#main');
+const switcher = document.querySelector('.switch');
+const body = document.body;
 let searchCategory;
 const studentArray = [];
 const editCache = {};
 const sortCache = {};
+const switcherObj = {darkMode: false}
 let filteredArray;
 
 class Student {
@@ -51,31 +54,14 @@ async function getStudent() {
 }
 const createTable = (arg) => {
 	tableContainer.innerHTML = '';
-	const keys = [
-		'id',
-		'firstName',
-		'lastName',
-		'capsule',
-		'age',
-		'city',
-		'gender',
-		'hobby',
-	];
+	const keys = ['id','firstName','lastName','capsule','age','city','gender','hobby',];
 	const row = document.createElement('thead');
 	keys.forEach((header) => {
 		const headRow = document.createElement('th');
-		headRow.setAttribute('sort', false);
 		headRow.textContent = header.toString();
 		row.appendChild(headRow);
 		tableContainer.appendChild(row);
-		headRow.addEventListener('click', (e) => {
-			if (headRow.getAttribute('sort') === 'false') {
-				headRow.attributes.sort.value = 'true';
-			} else {
-				headRow.attributes.sort.value = 'false';
-			}
-			sortRow(e);
-		});
+		headRow.addEventListener('click', (e) => sortRow(e));
 	});
 	arg.forEach((el) => {
 		const row = document.createElement('tr');
@@ -215,4 +201,15 @@ category.forEach((el) => {
 		searchCategory = e.target.value;
 	});
 });
+switcher.addEventListener('change', (e) => {
+	if (switcherObj.darkMode) {
+		switcherObj.darkMode = false;
+		body.style.background = '#fff';
+		body.style.color = '#000';
+	} else {
+		body.style.background = '#292929';
+		body.style.color = '#fff';
+		switcherObj.darkMode = true;
+	}
+})
 getStudent();
