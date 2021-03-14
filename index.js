@@ -162,7 +162,7 @@ const confirm = (e) => {
         if (i > 0 && i < 8) {
 			let textInput = array[i].firstElementChild.value;
 			local[idOnLocal][keys[i]] = textInput
-			filteredArray[id][keys[i]] = textInput;
+			// filteredArray[idOnLocal][keys[i]] = textInput;
             array[i].firstElementChild.remove();
             array[i].innerText = textInput;
         }        
@@ -173,6 +173,7 @@ const confirm = (e) => {
     e.target.parentElement.previousElementSibling.classList.add('hidden-td');
     e.target.parentElement.previousElementSibling.previousElementSibling.classList.remove('hidden-td');
     e.target.parentElement.nextElementSibling.classList.remove('hidden-td')
+	input.value = '';
 }
 const edit = (e) => {
 	const childNodesArr = e.path[2].childNodes;
@@ -203,6 +204,7 @@ const deleteStudent = (e) => {
 	local = local.filter((el) => el.id !== parseInt(e.target.parentElement.parentElement.firstElementChild.textContent));
 	localStorage.setItem('students', JSON.stringify(local));
 	createTable(local);
+	input.value = '';
 }
 input.addEventListener('input', (e) => {
 	let local = JSON.parse(localStorage.students);
