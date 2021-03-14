@@ -50,7 +50,12 @@ async function getStudent() {
 	main.style.display = 'flex';
 	studentArray.sort((a, b) => a.id - b.id);
 	filteredArray = [...studentArray];
-	createTable(filteredArray);
+	if (localStorage.length === 0) {
+		localStorage.setItem('students',JSON.stringify(studentArray))
+		createTable(studentArray);
+	} else {
+		createTable(JSON.parse(localStorage.students))
+	}
 }
 const createTable = (arg) => {
 	tableContainer.innerHTML = '';
@@ -116,16 +121,17 @@ const createTable = (arg) => {
 	});
 };
 const sortRow = (e) => {
+	let local = JSON.parse(localStorage.students);
 	let word = e.target.innerText.replace(' ','');
 	let newWord = `${word.charAt(0).toLowerCase()}${word.slice(1)}`;
 	if (sortCache[newWord]) {
 		sortCache[newWord] = false;	
-		filteredArray.sort((a, b) =>  b[newWord].toString().localeCompare(a[newWord].toString(), undefined, {numeric: true,}));
+		local = local.sort((a, b) =>  b[newWord].toString().localeCompare(a[newWord].toString(), undefined, {numeric: true,}));
 	} else {
 		sortCache[newWord] = true;
-		filteredArray.sort((a, b) =>  a[newWord].toString().localeCompare(b[newWord].toString(), undefined, {numeric: true,}));
+		local = local.sort((a, b) =>  a[newWord].toString().localeCompare(b[newWord].toString(), undefined, {numeric: true,}));
 	}
-	createTable(filteredArray);
+	createTable(local);
 };
 const cancel = (e) => {
     const array = e.target.parentElement.parentElement.childNodes;
@@ -141,17 +147,28 @@ const cancel = (e) => {
     e.target.parentElement.nextElementSibling.nextElementSibling.classList.remove('hidden-td');
 };
 const confirm = (e) => {
+	let local = JSON.parse(localStorage.students);
 	const keys = ['id','firstName', 'lastName', 'capsule', 'age','city','gender','hobby'];
 	let id = parseInt(e.target.parentElement.parentElement.firstElementChild.textContent);
     const array = e.target.parentElement.parentElement.childNodes;
+	// Find ID location
+	let idOnLocal;
+	local.forEach((el,i) => {
+		if (el.id === id) {
+			idOnLocal = i;
+		}
+	})
     for (let i = 0; i < array.length; i++) {
         if (i > 0 && i < 8) {
-            let textInput = array[i].firstElementChild.value;
+			let textInput = array[i].firstElementChild.value;
+			local[idOnLocal][keys[i]] = textInput
 			filteredArray[id][keys[i]] = textInput;
             array[i].firstElementChild.remove();
             array[i].innerText = textInput;
         }        
     }
+	localStorage.setItem('students',JSON.stringify(local));
+	createTable(local)
     e.target.parentElement.classList.add('hidden-td');
     e.target.parentElement.previousElementSibling.classList.add('hidden-td');
     e.target.parentElement.previousElementSibling.previousElementSibling.classList.remove('hidden-td');
@@ -182,17 +199,15 @@ const edit = (e) => {
 	e.target.parentElement.nextElementSibling.nextElementSibling.classList.remove('hidden-td');
 };
 const deleteStudent = (e) => {
-	filteredArray = filteredArray.filter((el) => el.id !== parseInt(e.target.parentElement.parentElement.firstElementChild.textContent));
-	createTable(filteredArray);
+	let local = JSON.parse(localStorage.students);
+	local = local.filter((el) => el.id !== parseInt(e.target.parentElement.parentElement.firstElementChild.textContent));
+	localStorage.setItem('students', JSON.stringify(local));
+	createTable(local);
 }
 input.addEventListener('input', (e) => {
-	filteredArray = studentArray.filter((el) => {
-		return (
-			el[searchCategory]
-				.toString()
-				.toLowerCase()
-				.indexOf(input.value.toLowerCase()) >= 0
-		);
+	let local = JSON.parse(localStorage.students);
+	filteredArray = local.filter((el) => {
+		return (el[searchCategory].toString().toLowerCase().indexOf(input.value.toLowerCase()) >= 0);
 	});
 	createTable(filteredArray);
 });
